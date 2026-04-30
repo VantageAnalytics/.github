@@ -1,9 +1,10 @@
 name: 'Reusable | Markdown Link Check'
 
 # Reusable workflow that runs lychee against all markdown files in the caller
-# repository using a hermetic, offline configuration. Validates internal
-# relative links and fragment anchors only; external URLs are not fetched,
-# keeping CI hermetic and stable.
+# repository using a hermetic, offline configuration. Validates that internal
+# relative-path links resolve to a real file on disk; external URLs are not
+# fetched and fragment anchors (#section) are not validated, keeping CI
+# hermetic and avoiding false positives from anchor drift.
 #
 # Helps keep the markdown documentation that AI coding agents consume
 # (AGENTS.md, CLAUDE.md, agents/*.md, etc.) hermetically sealed and

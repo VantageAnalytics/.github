@@ -9,12 +9,16 @@ config changes roll out deliberately, not implicitly.
 ### `check_md_links.yml`
 
 Runs lychee against `**/*.md`, `**/*.mdx`, `**/*.mdc` in the calling
-repository using a hermetic, offline configuration — internal relative
-links and fragment anchors only, no external URL fetches.
+repository using a hermetic, offline configuration. Validates that
+internal relative-path links resolve to a real file on disk. External
+URLs are **not** fetched and fragment anchors (`#section`) are **not**
+validated — anchor checking produces too many false positives in
+practice (rendered headings, generated anchors, intentional drafts) and
+network checking is flaky in CI.
 
 Why it exists: the markdown documentation in our repos (`AGENTS.md`,
 `CLAUDE.md`, `agents/*.md`, layer-specific instruction files) is read by
-AI coding agents at every session. A broken internal link silently
+AI coding agents at every session. A broken relative-path link silently
 degrades the context an agent sees. This workflow enforces that those
 docs stay hermetically sealed and self-consistent across every VA repo
 using the same config.
