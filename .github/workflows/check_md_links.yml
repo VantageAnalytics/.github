@@ -1,0 +1,42 @@
+name: 'Reusable | Markdown Link Check'
+
+# Reusable workflow that runs lychee against all markdown files in the caller
+# repository using a hermetic, offline configuration. Validates internal
+# relative links and fragment anchors only; external URLs are not fetched,
+# keeping CI hermetic and stable.
+#
+# Helps keep the markdown documentation that AI coding agents consume
+# (AGENTS.md, CLAUDE.md, agents/*.md, etc.) hermetically sealed and
+# self-consistent across every VA repo.
+#
+# Caller usage:
+#
+#   jobs:
+#     link-check:
+#       uses: VantageAnalytics/.github/.github/workflows/check_md_links.yml@<sha>
+
+on:
+  workflow_call:
+
+jobs:
+  link-check:
+    name: Check markdown links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --offline
+            --exclude-path node_modules
+            --exclude-path .pytest_cache
+            --exclude-path .venv
+            --exclude-path venv
+            --exclude-path dist
+            --exclude-path build
+            --exclude-path .next
+            --root-dir "$GITHUB_WORKSPACE"
+            "**/*.md" "**/*.mdx" "**/*.mdc"
+          fail: true
